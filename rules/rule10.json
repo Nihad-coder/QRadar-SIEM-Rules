@@ -1,0 +1,8 @@
+{
+  "name": "Ransomware Activity: Mass Deletion",
+  "id": 1010,
+  "description": "Qısa müddətdə çoxsaylı fayl silinməsi",
+  "event_id": "4660",
+  "threshold": 100,
+  "severity": "Critical"
+}

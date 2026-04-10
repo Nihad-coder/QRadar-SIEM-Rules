@@ -3,17 +3,18 @@ name: QRadar Rule Sync
 on:
   push:
     paths:
-      - 'rules/**'  # Yalnız rules qovluğunda dəyişiklik edəndə işə düşür
+      - 'rules/**'
+      - 'scripts/**'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # v3-dən v4-ə keçdik
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5  # v4-dən v5-ə keçdik
         with:
           python-version: '3.9'
 
@@ -21,8 +22,4 @@ jobs:
         run: pip install requests
 
       - name: Run sync script
-        env:
-          # GitHub bu dəyərləri sənin Settings-də yazdığın sandıqdan götürəcək
-          QRADAR_IP: ${{ secrets.QRADAR_IP }}
-          QRADAR_TOKEN: ${{ secrets.QRADAR_TOKEN }}
         run: python scripts/sync.py

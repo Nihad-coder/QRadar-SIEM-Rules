@@ -1,0 +1,8 @@
+{
+  "name": "RDP Brute Force Detection",
+  "id": 1007,
+  "description": "RDP portu üzərindən kütləvi giriş cəhdləri",
+  "event_id": "4625",
+  "port": 3389,
+  "severity": "High"
+}

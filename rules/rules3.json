@@ -1,0 +1,8 @@
+{
+  "name": "Multiple Failed Logins",
+  "id": 1003,
+  "description": "Ard-arda 10-dan çox uğursuz giriş cəhdi",
+  "event_id": "4625",
+  "threshold": 10,
+  "severity": "Medium"
+}

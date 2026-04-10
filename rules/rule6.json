@@ -1,0 +1,7 @@
+{
+  "name": "Persistence: Scheduled Task Created",
+  "id": 1006,
+  "description": "Sistemdə yeni planlaşdırılmış tapşırıq yaradıldı",
+  "event_id": "4698",
+  "severity": "Medium"
+}

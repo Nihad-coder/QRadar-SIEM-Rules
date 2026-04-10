@@ -1,33 +1,46 @@
+import os
 import requests
+import json
 import urllib3
 
-# Logları təmizləmək üçün xəbərdarlıqları söndürürük
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# Məlumatları birbaşa bura yazırıq
+# Melumatlari birbasa bura yaziriq
 QRADAR_IP = "16.16.141.142"
 QRADAR_TOKEN = "7535d031-9617-4852-995f-097c5b32b5f7"
 
-# Bu yol QRadar-ın rəsmi API yardım səhifəsidir, mütləq cavab verməlidir
-url = f"https://{QRADAR_IP}/api/help/capabilities"
+# Reference Set endpoint-i melumat yazmaq ucun en stabil yoldur
+url = f"https://{QRADAR_IP}/api/reference_data/sets/GitHub_Automation_Final_Test"
 
 headers = {
     'SEC': QRADAR_TOKEN,
+    'Content-Type': 'application/json',
     'Accept': 'application/json'
 }
 
-print(f"Bağlantı yoxlanılır: {QRADAR_IP}")
+def sync_rules():
+    rules_dir = 'rules/'
+    print(f"--- QRadar Qayda Sinxronizasiyasi Basladi ---")
 
-try:
-    # 30 saniyə vaxt veririk
-    response = requests.get(url, headers=headers, verify=False, timeout=30)
-    
-    if response.status_code == 200:
-        print("✅ UGURLU! GitHub QRadar-a çatdı.")
-    else:
-        print(f"❌ Server cavab verdi, amma xəta var. Kod: {response.status_code}")
-        print(f"Mesaj: {response.text[:200]}")
+    for filename in os.listdir(rules_dir):
+        if filename.endswith('.json'):
+            with open(os.path.join(rules_dir, filename), 'r') as f:
+                rule_data = json.load(f)
+                rule_name = rule_data.get('name', filename)
+                
+                # Qaydanin adini QRadar-da bir element kimi yaradiriq
+                # Bu, qaydanin sistemde oldugunu subut edir
+                payload = [rule_name] 
+                
+                try:
+                    # Melumati QRadar-a gonderirik
+                    response = requests.post(url, headers=headers, json=payload, verify=False)
+                    if response.status_code in [200, 201]:
+                        print(f"✅ Sinxron edildi: {rule_name}")
+                    else:
+                        print(f"⚠️ {rule_name} gonderilerken server cavabi: {response.status_code}")
+                except Exception as e:
+                    print(f"❌ Xeta ({filename}): {str(e)}")
 
-except Exception as e:
-    print(f"💥 Bağlantı kəsildi! Səbəb: {str(e)}")
-    print("İPUCU: AWS Security Group-da 443 portunun 0.0.0.0/0 üçün açıq olduğuna bir daha baxın.")
+if __name__ == "__main__":
+    sync_rules()

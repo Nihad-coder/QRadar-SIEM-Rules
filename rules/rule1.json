@@ -1,0 +1,7 @@
+{
+  "name": "New User Created",
+  "id": 1001,
+  "description": "Yeni istifadəçi yaradıldıqda Offense yaradır",
+  "event_id": "4720",
+  "severity": "Medium"
+}

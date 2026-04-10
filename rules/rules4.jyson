@@ -1,0 +1,7 @@
+{
+  "name": "Security Logs Cleared",
+  "id": 1004,
+  "description": "Sistem logları hücumçu tərəfindən silindi",
+  "event_id": "1102",
+  "severity": "Critical"
+}

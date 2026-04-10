@@ -2,13 +2,13 @@ import os
 import requests
 import json
 
-# GitHub Secrets-dən məlumatları götürürük
+# GitHub Secrets
 QRADAR_IP = os.getenv('QRADAR_IP')
 QRADAR_TOKEN = os.getenv('QRADAR_TOKEN')
 
-# QRadar API URL (Qaydaların siyahısı üçün)
-# Qeyd: Bir çox QRadar versiyasında qaydalar 'analytics/rules' yerinə 'offense_management/rules' altında olur
-url = f"https://{QRADAR_IP}/api/offense_management/rules"
+# QRadar API-da qaydaları oxumaq və ya yaratmaq üçün rəsmi yol budur
+# Diqqət: /api/analytics/rules çox vaxt GET üçündür, biz POST-u yoxlayırıq
+url = f"https://{QRADAR_IP}/api/analytics/rules"
 
 headers = {
     'SEC': QRADAR_TOKEN,
@@ -19,25 +19,31 @@ headers = {
 def sync_rules():
     rules_dir = 'rules/'
     
+    if not os.path.exists(rules_dir):
+        print("Səhv: rules/ qovluğu tapılmadı!")
+        return
+
     for filename in os.listdir(rules_dir):
         if filename.endswith('.json'):
-            with open(os.path.join(rules_dir, filename), 'r') as f:
+            file_path = os.path.join(rules_dir, filename)
+            with open(file_path, 'r') as f:
                 try:
                     rule_data = json.load(f)
-                    rule_name = rule_data.get('name', filename)
+                    print(f"Hazırlanır: {filename}...")
                     
-                    print(f"Göndərilir: {rule_name}...")
+                    # QRadar-a göndəririk
+                    response = requests.post(url, headers=headers, json=rule_data, verify=False)
                     
-                    # Verify=False SSL sertifikat xətasının qarşısını alır
-                    response = requests.post(url, headers=headers, data=json.dumps(rule_data), verify=False)
-                    
-                    if response.status_code == 201 or response.status_code == 200:
-                        print(f"✅ Uğurlu: {rule_name} QRadar-a əlavə edildi.")
+                    if response.status_code in [200, 201]:
+                        print(f"✅ Uğurlu: {filename}")
                     else:
-                        print(f"❌ Xəta baş verdi ({rule_name}): {response.status_code} - {response.text}")
-                
+                        print(f"❌ Xəta ({filename}): Status {response.status_code}")
+                        print(f"Server cavabı: {response.text}")
+                        
                 except Exception as e:
-                    print(f"⚠️ Fayl oxunarkən xəta ({filename}): {str(e)}")
+                    print(f"⚠️ {filename} işlənərkən xəta: {e}")
 
 if __name__ == "__main__":
+    # SSL xəbərdarlıqlarını gizlədirik (Verify=False istifadə etdiyimiz üçün)
+    requests.packages.urllib3.disable_warnings()
     sync_rules()

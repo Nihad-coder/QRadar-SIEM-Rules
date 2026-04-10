@@ -1,0 +1,7 @@
+{
+  "name": "User Added to Admin Group",
+  "id": 1002,
+  "description": "İstifadəçi Admin və ya Domain Admin qrupuna əlavə edildi",
+  "event_id": "4732, 4728",
+  "severity": "High"
+}

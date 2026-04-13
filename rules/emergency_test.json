@@ -1,0 +1,20 @@
+{
+  "name": "CRITICAL: Test Attack Detected",
+  "enabled": true,
+  "base_capacity_entity": "event",
+  "source_data": {
+    "filter_expressions": [
+      {
+        "expression": "username = 'TestHucumcu'",
+        "operator": "EQUALS"
+      }
+    ]
+  },
+  "responses": [
+    {
+      "type": "create_offense",
+      "offense_type": "User Name",
+      "description": "Manual Test Attack for SOC Report"
+    }
+  ]
+}

@@ -1,7 +1,0 @@
-{
-  "name": "Suspicious Login Activity",
-  "description": "Detects multiple failed login attempts followed by a success",
-  "severity": 7,
-  "category": "Authentication",
-  "enabled": true
-}

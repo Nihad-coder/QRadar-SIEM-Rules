@@ -1,8 +1,0 @@
-{
-  "name": "LSASS Memory Access",
-  "id": 1009,
-  "description": "Şifrə oğurluğu cəhdi (LSASS access)",
-  "event_id": "10",
-  "target_process": "lsass.exe",
-  "severity": "Critical"
-}
